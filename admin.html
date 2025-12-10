@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>HEX 상품 관리자(admin)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Bootstrap 5 -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  />
+
+  <style>
+    body {
+      background-color: #020617;
+      color: #e5e7eb;
+    }
+    .card {
+      background-color: #020617;
+      border-radius: 16px;
+      border: 1px solid #374151;
+    }
+    .form-label {
+      font-size: 0.86rem;
+      color: #9ca3af;
+    }
+    .table {
+      color: #e5e7eb;
+    }
+    .table thead th {
+      border-bottom-color: #4b5563;
+    }
+    .table tbody tr {
+      vertical-align: middle;
+    }
+    .badge-link {
+      font-size: 0.75rem;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background: #111827;
+    }
+    .badge-link a {
+      color: #38bdf8;
+      text-decoration: none;
+    }
+    .badge-link a:hover {
+      text-decoration: underline;
+    }
+    .small-text {
+      font-size: 0.8rem;
+      color: #9ca3af;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+    <div class="container">
+      <a class="navbar-brand" href="#">
+        HEX 상품 관리자
+      </a>
+      <div class="d-flex gap-2">
+        <a href="index.html" class="btn btn-outline-light btn-sm">인덱스 보기</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <div class="row g-4">
+      <div class="col-12 col-lg-5">
+        <div class="card p-3 p-md-4">
+          <h1 class="h5 mb-3" id="form-title">상품 등록</h1>
+
+          <form id="product-form">
+            <input type="hidden" id="product-id" />
+
+            <div class="mb-2">
+              <label for="product-name" class="form-label">상품 이름</label>
+              <input
+                type="text"
+                id="product-name"
+                class="form-control form-control-sm"
+                required
+                placeholder="예: Phellinus Meshima Capsule 30정"
+              />
+            </div>
+
+            <div class="mb-2">
+              <label for="product-desc" class="form-label">상품 설명 (선택)</label>
+              <textarea
+                id="product-desc"
+                class="form-control form-control-sm"
+                rows="2"
+                placeholder="간단한 설명을 입력하세요."
+              ></textarea>
+            </div>
+
+            <div class="mb-2">
+              <label for="image-url" class="form-label">상품 이미지 URL</label>
+              <input
+                type="url"
+                id="image-url"
+                class="form-control form-control-sm"
+                placeholder="https://... 형태의 이미지 주소"
+              />
+              <div class="small-text mt-1">
+                이미지 파일을 직접 올릴 수는 없고, 웹에 업로드된 이미지 URL을 사용합니다.
+              </div>
+            </div>
+
+            <hr class="my-3" />
+
+            <div class="mb-2">
+              <label for="member-link" class="form-label">회원전용 구매 링크</label>
+              <input
+                type="url"
+                id="member-link"
+                class="form-control form-control-sm"
+                placeholder="회원전용 페이지 URL"
+              />
+            </div>
+
+            <div class="mb-2">
+              <label for="hexmall-link" class="form-label">HEX몰 링크</label>
+              <input
+                type="url"
+                id="hexmall-link"
+                class="form-control form-control-sm"
+                placeholder="예: https://heritagex-2.myshopify.com/..."
+              />
+            </div>
+
+            <div class="mb-2">
+              <label for="coupang-link" class="form-label">쿠팡 링크</label>
+              <input
+                type="url"
+                id="coupang-link"
+                class="form-control form-control-sm"
+                placeholder="쿠팡 상품 URL"
+              />
+            </div>
+
+            <div class="mb-3">
+              <label for="shopee-link" class="form-label">쇼피 링크</label>
+              <input
+                type="url"
+                id="shopee-link"
+                class="form-control form-control-sm"
+                placeholder="Shopee 상품 URL"
+              />
+            </div>
+
+            <div class="d-flex gap-2 mt-3">
+              <button type="submit" class="btn btn-primary btn-sm" id="save-btn">
+                저장
+              </button>
+              <button type="button" class="btn btn-outline-secondary btn-sm" id="reset-btn">
+                새로 입력
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <p class="small-text mt-3">
+          저장된 데이터는 이 브라우저의 localStorage에 hexProducts라는 키로 저장됩니다.
+          같은 PC·브라우저에서 index.html을 열면 상품 카드가 자동으로 표시됩니다.
+        </p>
+      </div>
+
+      <div class="col-12 col-lg-7">
+        <div class="card p-3 p-md-4">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <h2 class="h6 mb-0">등록된 상품 목록</h2>
+            <button class="btn btn-sm btn-outline-danger" id="clear-all-btn">
+              전체 삭제
+            </button>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-sm align-middle">
+              <thead>
+                <tr>
+                  <th style="width: 25%;">상품명</th>
+                  <th style="width: 35%;">링크 상태</th>
+                  <th style="width: 20%;">이미지</th>
+                  <th style="width: 20%;">관리</th>
+                </tr>
+              </thead>
+              <tbody id="product-table-body">
+                <!-- JS로 채워짐 -->
+              </tbody>
+            </table>
+          </div>
+
+          <div id="no-product-row" class="text-center small-text mt-2 d-none">
+            아직 등록된 상품이 없습니다.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "hexProducts";
+
+    function loadProducts() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return [];
+        return JSON.parse(raw);
+      } catch (e) {
+        console.error("상품 데이터 로드 오류:", e);
+        return [];
+      }
+    }
+
+    function saveProducts(list) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+    }
+
+    function resetForm() {
+      document.getElementById("product-id").value = "";
+      document.getElementById("product-name").value = "";
+      document.getElementById("product-desc").value = "";
+      document.getElementById("image-url").value = "";
+      document.getElementById("member-link").value = "";
+      document.getElementById("hexmall-link").value = "";
+      document.getElementById("coupang-link").value = "";
+      document.getElementById("shopee-link").value = "";
+
+      document.getElementById("form-title").textContent = "상품 등록";
+      document.getElementById("save-btn").textContent = "저장";
+    }
+
+    function fillForm(product) {
+      document.getElementById("product-id").value = product.id || "";
+      document.getElementById("product-name").value = product.name || "";
+      document.getElementById("product-desc").value = product.description || "";
+      document.getElementById("image-url").value = product.imageUrl || "";
+      document.getElementById("member-link").value = product.memberLink || "";
+      document.getElementById("hexmall-link").value = product.hexmallLink || "";
+      document.getElementById("coupang-link").value = product.coupangLink || "";
+      document.getElementById("shopee-link").value = product.shopeeLink || "";
+
+      document.getElementById("form-title").textContent = "상품 수정";
+      document.getElementById("save-btn").textContent = "수정 저장";
+    }
+
+    function renderTable() {
+      const list = loadProducts();
+      const tbody = document.getElementById("product-table-body");
+      const emptyRow = document.getElementById("no-product-row");
+
+      tbody.innerHTML = "";
+
+      if (!list.length) {
+        emptyRow.classList.remove("d-none");
+        return;
+      } else {
+        emptyRow.classList.add("d-none");
+      }
+
+      list.forEach((p) => {
+        const tr = document.createElement("tr");
+
+        // 상품명
+        const tdName = document.createElement("td");
+        tdName.textContent = p.name || "이름 없음";
+
+        // 링크 상태
+        const tdLinks = document.createElement("td");
+        const linksInfo = [
+          { label: "회원", key: "memberLink" },
+          { label: "HEX몰", key: "hexmallLink" },
+          { label: "쿠팡", key: "coupangLink" },
+          { label: "쇼피", key: "shopeeLink" },
+        ];
+        linksInfo.forEach((info, idx) => {
+          const span = document.createElement("span");
+          span.className = "badge-link me-1 mb-1 d-inline-block";
+
+          const url = p[info.key] || "";
+          if (url && url.trim() !== "") {
+            span.innerHTML = info.label + ': <a href="' +
+              url +
+              '" target="_blank" rel="noopener noreferrer">열기</a>';
+          } else {
+            span.textContent = info.label + ": 없음";
+          }
+
+          tdLinks.appendChild(span);
+          if (idx === 1) tdLinks.appendChild(document.createElement("br"));
+        });
+
+        // 이미지 상태
+        const tdImg = document.createElement("td");
+        if (p.imageUrl && p.imageUrl.trim() !== "") {
+          const img = document.createElement("img");
+          img.src = p.imageUrl;
+          img.alt = "미리보기";
+          img.style.width = "60px";
+          img.style.height = "40px";
+          img.style.objectFit = "cover";
+          img.style.borderRadius = "6px";
+          tdImg.appendChild(img);
+        } else {
+          tdImg.textContent = "없음";
+        }
+
+        // 관리 버튼
+        const tdActions = document.createElement("td");
+        const editBtn = document.createElement("button");
+        editBtn.className = "btn btn-sm btn-outline-info me-1 mb-1";
+        editBtn.textContent = "수정";
+        editBtn.addEventListener("click", () => {
+          fillForm(p);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        });
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn btn-sm btn-outline-danger mb-1";
+        delBtn.textContent = "삭제";
+        delBtn.addEventListener("click", () => {
+          if (!confirm("이 상품을 삭제하시겠습니까?")) return;
+          const updated = loadProducts().filter((item) => item.id !== p.id);
+          saveProducts(updated);
+          renderTable();
+        });
+
+        tdActions.appendChild(editBtn);
+        tdActions.appendChild(delBtn);
+
+        tr.appendChild(tdName);
+        tr.appendChild(tdLinks);
+        tr.appendChild(tdImg);
+        tr.appendChild(tdActions);
+
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById("product-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const id = document.getElementById("product-id").value || String(Date.now());
+      const product = {
+        id,
+        name: document.getElementById("product-name").value.trim(),
+        description: document.getElementById("product-desc").value.trim(),
+        imageUrl: document.getElementById("image-url").value.trim(),
+        memberLink: document.getElementById("member-link").value.trim(),
+        hexmallLink: document.getElementById("hexmall-link").value.trim(),
+        coupangLink: document.getElementById("coupang-link").value.trim(),
+        shopeeLink: document.getElementById("shopee-link").value.trim(),
+      };
+
+      if (!product.name) {
+        alert("상품 이름은 필수입니다.");
+        return;
+      }
+
+      const list = loadProducts();
+      const index = list.findIndex((p) => p.id === id);
+
+      if (index >= 0) {
+        list[index] = product;
+      } else {
+        list.push(product);
+      }
+
+      saveProducts(list);
+      renderTable();
+      resetForm();
+    });
+
+    document.getElementById("reset-btn").addEventListener("click", function () {
+      resetForm();
+    });
+
+    document.getElementById("clear-all-btn").addEventListener("click", function () {
+      if (!confirm("모든 상품을 삭제하시겠습니까?")) return;
+      saveProducts([]);
+      renderTable();
+      resetForm();
+    });
+
+    renderTable();
+  </script>
+</body>
+</html>
