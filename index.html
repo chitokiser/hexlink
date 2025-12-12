@@ -2,280 +2,210 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>HEX 상품 인덱스</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>HEX Product Index</title>
 
-  <!-- Bootstrap 5 -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
   <style>
-    body {
-      background-color: #111827;
-      color: #e5e7eb;
-    }
-    .navbar-brand img {
-      height: 32px;
-      margin-right: 8px;
-    }
-    .product-card {
-      background: #1f2933;
-      border-radius: 16px;
-      border: 1px solid #374151;
-      overflow: hidden;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    body { background:#0b1220; color:#e5e7eb; }
+
+    .cardx {
+      background:#0f172a;
+      border:1px solid #243044;
+      border-radius:16px;
+      overflow:hidden;
+      height:100%;
+      display:flex;
+      flex-direction:column;
+      box-shadow:0 12px 30px rgba(0,0,0,0.35);
       transition: transform 0.18s ease, box-shadow 0.18s ease;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
     }
-    .product-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.55);
+    .cardx:hover { transform: translateY(-4px); box-shadow:0 18px 40px rgba(0,0,0,0.55); }
+
+    .imgwrap { position:relative; padding-top:66%; background:#0b1220; }
+    .imgwrap img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+
+    .body { padding:14px 16px 10px; flex:1; display:flex; flex-direction:column; gap:6px; }
+    .title { font-size:1rem; margin:0; color:#f8fafc; }
+    .desc { font-size:0.9rem; margin:0; color:#cbd5e1; }
+
+    .btnwrap {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:8px;
+      padding:12px 12px 14px;
+      border-top:1px solid #243044;
+      background:rgba(2,6,23,0.6);
     }
-    .product-image-wrapper {
-      position: relative;
-      padding-top: 70%;
-      overflow: hidden;
-      background: radial-gradient(circle at top, #1f2937, #020617);
-    }
-    .product-image-wrapper img {
-      position: absolute;
-      inset: 0;
-      margin: auto;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .product-body {
-      padding: 14px 16px 10px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-    .product-title {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #f9fafb;
-      margin: 0;
-    }
-    .product-desc {
-      font-size: 0.86rem;
-      color: #9ca3af;
-      margin: 0;
-    }
-    .btn-wrap {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-      padding: 10px 12px 14px;
-      border-top: 1px solid #374151;
-      background: rgba(15,23,42,0.95);
-    }
-    .btn-hex {
-      font-size: 0.82rem;
-      border-radius: 999px;
-      border-width: 0;
-      padding: 6px 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .btn-member {
-      background: linear-gradient(135deg, #f97316, #ec4899);
-      color: #fff;
-    }
-    .btn-hexmall {
-      background: #22c55e;
-      color: #04101f;
-    }
-    .btn-coupang {
-      background: #2563eb;
-      color: #e5f0ff;
-    }
-    .btn-shopee {
-      background: #f97316;
-      color: #1f1307;
-    }
-    .btn-hex:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-    .empty-state {
-      text-align: center;
-      padding: 60px 16px;
-      color: #9ca3af;
-    }
-    .empty-state a {
-      color: #38bdf8;
-      text-decoration: none;
-    }
-    .empty-state a:hover {
-      text-decoration: underline;
-    }
-    footer {
-      border-top: 1px solid #111827;
-      margin-top: 40px;
-      padding: 24px 0;
-      background: #020617;
-      color: #9ca3af;
-      font-size: 0.9rem;
-    }
+    .btn-mini { border-radius:999px; font-size:0.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .muted { color:#cbd5e1; font-size:0.9rem; }
+    .disabled-link { opacity:0.45; pointer-events:none; }
   </style>
 </head>
+
 <body>
-  <!-- 상단 네비게이션 -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-secondary">
+  <nav class="navbar navbar-dark bg-dark border-bottom border-secondary">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center" href="#">
-        <!-- 필요하면 hexlogo.png 넣기 -->
-        <!-- <img src="images/hexlogo.png" alt="HeritageX"> -->
-        <span>HEX 상품 인덱스</span>
-      </a>
-      <div class="d-flex">
-        <a href="admin.html" class="btn btn-outline-info btn-sm">
-          관리자 페이지
-        </a>
+      <span class="navbar-brand mb-0">HEX Product Index</span>
+      <div class="d-flex gap-2">
+        <a class="btn btn-sm btn-outline-info" href="admin.html">admin</a>
       </div>
     </div>
   </nav>
 
-  <!-- 메인 컨테이너 -->
   <main class="container my-4">
-    <header class="mb-3">
-      <h1 class="h4 mb-1">상품 목록</h1>
-      <p class="text-secondary mb-0" style="font-size: 0.92rem;">
-        카드의 버튼 링크와 상품 이미지는 admin.html에서 등록·수정할 수 있습니다.
-      </p>
-    </header>
-
-    <div id="product-list" class="row g-3">
-      <!-- JS로 카드가 채워집니다 -->
+    <div class="mb-3">
+      <div class="h4 mb-1">상품 목록</div>
+      <div class="muted" id="status">불러오는 중...</div>
     </div>
 
-    <div id="empty-state" class="empty-state d-none">
-      아직 등록된 상품이 없습니다.<br />
-      <a href="admin.html">admin.html</a>에서 상품을 먼저 등록해 주세요.
+    <div class="row g-3" id="grid"></div>
+
+    <div class="text-center muted py-5 d-none" id="empty">
+      등록된 상품이 없습니다.
     </div>
   </main>
 
-  <!-- 푸터 -->
-  <footer>
-    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
-      <div>© <span id="year"></span> HeritageX · HEXMall</div>
-      <div>
-        <a href="https://heritagex-2.myshopify.com" target="_blank" rel="noopener noreferrer">
-          HEXMall 바로가기
-        </a>
-      </div>
-    </div>
-  </footer>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+  <script src="src/firebase.js"></script>
 
   <script>
-    // 현재 연도 표시
-    document.getElementById("year").textContent = new Date().getFullYear();
+    (function () {
+      const $ = (id) => document.getElementById(id);
+      const setStatus = (msg) => $("status").textContent = msg || "";
 
-    function loadProducts() {
-      try {
-        const raw = localStorage.getItem("hexProducts");
-        if (!raw) return [];
-        return JSON.parse(raw);
-      } catch (e) {
-        console.error("상품 데이터 로드 오류:", e);
-        return [];
-      }
-    }
-
-    function createButton(label, url, extraClass) {
-      const btn = document.createElement("a");
-      btn.textContent = label;
-      btn.className = "btn btn-hex " + extraClass;
-
-      if (url && url.trim() !== "") {
-        btn.href = url;
-        btn.target = "_blank";
-        btn.rel = "noopener noreferrer";
-      } else {
-        btn.href = "javascript:void(0)";
-        btn.disabled = true;
-        btn.classList.add("disabled");
+      function safe(v) { return (v == null) ? "" : String(v); }
+      function toInt(v) {
+        const n = Number(String(v).trim());
+        return Number.isFinite(n) ? Math.floor(n) : null;
       }
 
-      return btn;
-    }
+      function linkButton(label, url, btnClass) {
+        const a = document.createElement("a");
+        a.className = `btn btn-sm ${btnClass} btn-mini`;
+        a.textContent = label;
 
-    function renderProducts() {
-      const products = loadProducts();
-      const listEl = document.getElementById("product-list");
-      const emptyEl = document.getElementById("empty-state");
+        if (url && url.trim() !== "") {
+          a.href = url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+        } else {
+          a.href = "javascript:void(0)";
+          a.classList.add("disabled-link");
+        }
+        return a;
+      }
 
-      listEl.innerHTML = "";
+      function isValidItem(item) {
+        if (!item || typeof item !== "object") return false;
+        const no = toInt(item.productNo);
+        const title = safe(item.title).trim();
+        const detailUrl = safe(item.detailUrl).trim();
 
-      if (!products.length) {
-        emptyEl.classList.remove("d-none");
+        // ✅ 필수 3종
+        if (no == null) return false;
+        if (!title) return false;
+        if (!detailUrl) return false;
+
+        return true;
+      }
+
+      function render(itemsObj) {
+        const grid = $("grid");
+        const empty = $("empty");
+
+        const entriesRaw = itemsObj ? Object.entries(itemsObj) : [];
+
+        // ✅ 유효한 것만 필터
+        const entries = entriesRaw.filter(([k, item]) => isValidItem(item));
+
+        // productNo 기준 오름차순
+        entries.sort((a, b) => toInt(a[1].productNo) - toInt(b[1].productNo));
+
+        grid.innerHTML = "";
+
+        if (entries.length === 0) {
+          empty.classList.remove("d-none");
+          setStatus("");
+          return;
+        }
+
+        empty.classList.add("d-none");
+        setStatus("");
+
+        for (const [key, item] of entries) {
+          const no = toInt(item.productNo);
+
+          const col = document.createElement("div");
+          col.className = "col-12 col-sm-6 col-lg-4";
+
+          const card = document.createElement("div");
+          card.className = "cardx";
+
+          const imgwrap = document.createElement("div");
+          imgwrap.className = "imgwrap";
+
+          const img = document.createElement("img");
+          img.src = `images/product/${no}.png`;
+          img.alt = safe(item.title) || "product";
+          imgwrap.appendChild(img);
+
+          const body = document.createElement("div");
+          body.className = "body";
+
+          const title = document.createElement("h3");
+          title.className = "title";
+          title.textContent = `[${no}] ${safe(item.title)}`;
+
+          const desc = document.createElement("p");
+          desc.className = "desc";
+          desc.textContent = safe(item.shortDesc);
+
+          body.appendChild(title);
+          body.appendChild(desc);
+
+          const btnwrap = document.createElement("div");
+          btnwrap.className = "btnwrap";
+
+          btnwrap.appendChild(linkButton("상세보기", safe(item.detailUrl), "btn-primary"));
+          btnwrap.appendChild(linkButton("판매자몰", safe(item.sellerMall), "btn-success"));
+          btnwrap.appendChild(linkButton("쿠팡", safe(item.coupangLink), "btn-warning"));
+          btnwrap.appendChild(linkButton("쇼핑", safe(item.shoppingLink), "btn-warning"));
+          btnwrap.appendChild(linkButton("회원전용", safe(item.memberLink), "btn-outline-light"));
+
+          card.appendChild(imgwrap);
+          card.appendChild(body);
+          card.appendChild(btnwrap);
+
+          col.appendChild(card);
+          grid.appendChild(col);
+        }
+      }
+
+      if (!window.firebase || !firebase.apps || firebase.apps.length === 0) {
+        setStatus("Firebase 초기화 실패");
         return;
-      } else {
-        emptyEl.classList.add("d-none");
       }
 
-      products.forEach((p) => {
-        const col = document.createElement("div");
-        col.className = "col-12 col-sm-6 col-lg-4";
+      let db;
+      try { db = window.db || firebase.database(); } catch (e) { console.error(e); }
 
-        const card = document.createElement("div");
-        card.className = "product-card";
+      if (!db) {
+        setStatus("DB 연결 실패");
+        return;
+      }
 
-        const imgWrap = document.createElement("div");
-        imgWrap.className = "product-image-wrapper";
-
-        const img = document.createElement("img");
-        img.alt = p.name || "상품 이미지";
-        img.src = p.imageUrl && p.imageUrl.trim() !== ""
-          ? p.imageUrl
-          : "https://via.placeholder.com/600x400?text=HEX+Product";
-
-        imgWrap.appendChild(img);
-
-        const body = document.createElement("div");
-        body.className = "product-body";
-
-        const title = document.createElement("h2");
-        title.className = "product-title";
-        title.textContent = p.name || "이름 없는 상품";
-
-        const desc = document.createElement("p");
-        desc.className = "product-desc";
-        desc.textContent = p.description || "설명 없음";
-
-        body.appendChild(title);
-        body.appendChild(desc);
-
-        const btnWrap = document.createElement("div");
-        btnWrap.className = "btn-wrap";
-
-        const btnMember = createButton("회원전용", p.memberLink, "btn-member");
-        const btnHexmall = createButton("HEX몰", p.hexmallLink, "btn-hexmall");
-        const btnCoupang = createButton("쿠팡", p.coupangLink, "btn-coupang");
-        const btnShopee = createButton("쇼피", p.shopeeLink, "btn-shopee");
-
-        btnWrap.appendChild(btnMember);
-        btnWrap.appendChild(btnHexmall);
-        btnWrap.appendChild(btnCoupang);
-        btnWrap.appendChild(btnShopee);
-
-        card.appendChild(imgWrap);
-        card.appendChild(body);
-        card.appendChild(btnWrap);
-
-        col.appendChild(card);
-        listEl.appendChild(col);
+      setStatus("불러오는 중...");
+      db.ref("items").on("value", snap => {
+        render(snap.val());
+      }, err => {
+        console.error(err);
+        setStatus("DB 로드 실패");
       });
-    }
-
-    renderProducts();
+    })();
   </script>
 </body>
 </html>
